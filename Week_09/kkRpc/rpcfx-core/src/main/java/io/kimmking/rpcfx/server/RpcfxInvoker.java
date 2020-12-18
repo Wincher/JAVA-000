@@ -5,14 +5,18 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResolver;
 import io.kimmking.rpcfx.api.RpcfxResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+@Slf4j
 public class RpcfxInvoker {
 
     private RpcfxResolver resolver;
+    private int successCount = 0;
+    private int errorCount = 0;
 
     public RpcfxInvoker(RpcfxResolver resolver){
         this.resolver = resolver;
@@ -22,25 +26,27 @@ public class RpcfxInvoker {
         RpcfxResponse response = new RpcfxResponse();
         String serviceClass = request.getServiceClass();
 
-        // 作业1：改成泛型和反射
-        Object service = resolver.resolve(serviceClass);//this.applicationContext.getBean(serviceClass);
-
         try {
+            //DONE: 作业1：改成泛型和反射
+            Object service = resolver.resolve(Class.forName(serviceClass));
             Method method = resolveMethodFromClass(service.getClass(), request.getMethod());
-            Object result = method.invoke(service, request.getParams()); // dubbo, fastjson,
-            // 两次json序列化能否合并成一个
+            //TODO: dubbo, fastjson
+            Object result = method.invoke(service, request.getParams());
+            //TODO: 两次json序列化能否合并成一个
             response.setResult(JSON.toJSONString(result, SerializerFeature.WriteClassName));
             response.setStatus(true);
+            log.info("success: " + successCount++);
             return response;
-        } catch ( IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
 
-            // 3.Xstream
+            // TODO: 3.Xstream
 
             // 2.封装一个统一的RpcfxException
             // 客户端也需要判断异常
             e.printStackTrace();
             response.setException(e);
             response.setStatus(false);
+            log.info("success: " + errorCount++);
             return response;
         }
     }

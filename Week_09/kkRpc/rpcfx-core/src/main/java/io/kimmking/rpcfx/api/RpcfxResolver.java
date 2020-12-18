@@ -4,4 +4,5 @@ public interface RpcfxResolver {
 
     Object resolve(String serviceClass);
 
+    Object resolve(Class clazz);
 }
