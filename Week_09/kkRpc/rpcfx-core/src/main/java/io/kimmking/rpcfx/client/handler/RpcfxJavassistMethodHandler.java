@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
 import io.kimmking.rpcfx.client.HttpClient;
+import io.kimmking.rpcfx.exception.RpcfxException;
 import javassist.util.proxy.MethodHandler;
 
 import java.lang.reflect.Method;
@@ -30,7 +31,9 @@ public class RpcfxJavassistMethodHandler implements MethodHandler {
         request.setParams(params);
 
         RpcfxResponse response = HttpClient.post(request, url);
-
+        if (!response.isStatus()) {
+            throw new RpcfxException(response.getException());
+        }
         // 这里判断response.status，处理异常
         // 考虑封装一个全局的RpcfxException
 

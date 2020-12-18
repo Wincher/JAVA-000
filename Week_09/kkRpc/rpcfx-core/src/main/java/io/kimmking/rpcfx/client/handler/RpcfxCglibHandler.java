@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
 import io.kimmking.rpcfx.client.HttpClient;
+import io.kimmking.rpcfx.exception.RpcfxException;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
@@ -30,7 +31,9 @@ public class RpcfxCglibHandler implements MethodInterceptor {
         request.setParams(objects);
 
         RpcfxResponse response = HttpClient.post(request, url);
-
+        if (!response.isStatus()) {
+            throw response.getException();
+        }
         // 这里判断response.status，处理异常
         // 考虑封装一个全局的RpcfxException
 

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResolver;
 import io.kimmking.rpcfx.api.RpcfxResponse;
+import io.kimmking.rpcfx.exception.RpcfxException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,18 +36,21 @@ public class RpcfxInvoker {
             //TODO: 两次json序列化能否合并成一个
             response.setResult(JSON.toJSONString(result, SerializerFeature.WriteClassName));
             response.setStatus(true);
-            log.info("success: " + successCount++);
+            log.info("successCount: " + successCount++);
+            if (3 == successCount) {
+                throw new IllegalAccessException("hahaha");
+            }
             return response;
         } catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
 
             // TODO: 3.Xstream
 
-            // 2.封装一个统一的RpcfxException
-            // 客户端也需要判断异常
-            e.printStackTrace();
-            response.setException(e);
+            // DONE: 2.封装一个统一的RpcfxException
+            // DONE: 客户端也需要判断异常
+            log.error(e.getMessage());
+            response.setException(new RpcfxException(e.getMessage()));
             response.setStatus(false);
-            log.info("success: " + errorCount++);
+            log.info("errorCount: " + errorCount++);
             return response;
         }
     }
