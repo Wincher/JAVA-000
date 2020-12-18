@@ -5,6 +5,7 @@ import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
 import io.kimmking.rpcfx.client.HttpClient;
 import io.kimmking.rpcfx.exception.RpcfxException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -17,6 +18,9 @@ public class RpcfxInvocationHandler implements InvocationHandler {
 
     private final Class<?> serviceClass;
     private final String url;
+    @Autowired
+    private HttpClient httpClient;
+
     public <T> RpcfxInvocationHandler(Class<T> serviceClass, String url) {
         this.serviceClass = serviceClass;
         this.url = url;
@@ -33,7 +37,7 @@ public class RpcfxInvocationHandler implements InvocationHandler {
         request.setMethod(method.getName());
         request.setParams(params);
 
-        RpcfxResponse response = HttpClient.post(request, url);
+        RpcfxResponse response = httpClient.post(request, url);
 
         if (!response.isStatus()) {
             throw new RpcfxException(response.getException());

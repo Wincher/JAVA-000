@@ -7,6 +7,7 @@ import io.kimmking.rpcfx.client.HttpClient;
 import io.kimmking.rpcfx.exception.RpcfxException;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Method;
 
@@ -17,6 +18,8 @@ import java.lang.reflect.Method;
 public class RpcfxCglibHandler implements MethodInterceptor {
     private final Class<?> serviceClass;
     private final String url;
+    @Autowired
+    private HttpClient httpClient;
 
     public RpcfxCglibHandler(Class<?> serviceClass, String url) {
         this.serviceClass = serviceClass;
@@ -30,7 +33,7 @@ public class RpcfxCglibHandler implements MethodInterceptor {
         request.setMethod(method.getName());
         request.setParams(objects);
 
-        RpcfxResponse response = HttpClient.post(request, url);
+        RpcfxResponse response = httpClient.post(request, url);
         if (!response.isStatus()) {
             throw response.getException();
         }

@@ -7,6 +7,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
  * @author wincher
  * <p> io.kimmking.rpcfx.client <p>
  */
+@Component
 public class HttpClient {
 
     public static final MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
@@ -21,8 +23,8 @@ public class HttpClient {
     // TODO: 2.尝试使用httpclient或者netty client
     private static OkHttpClient client = new OkHttpClient();
 
-    public static RpcfxResponse post(RpcfxRequest req, String url) throws IOException {
-        String reqJson = JSON.toJSONString(req);
+    public RpcfxResponse post(RpcfxRequest req, String url) throws IOException {
+        String reqJson = encode(req);
         System.out.println("req json: "+reqJson);
 
         final Request request = new Request.Builder()
@@ -32,5 +34,9 @@ public class HttpClient {
         String respJson = client.newCall(request).execute().body().string();
         System.out.println("resp json: "+respJson);
         return JSON.parseObject(respJson, RpcfxResponse.class);
+    }
+
+    private static String encode(RpcfxRequest req) {
+        return JSON.toJSONString(req);
     }
 }
