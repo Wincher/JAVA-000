@@ -15,14 +15,13 @@ import java.io.IOException;
  * @author wincher
  * <p> io.kimmking.rpcfx.client <p>
  */
-@Component
-public class HttpClient {
+public class HttpClient implements RpcClient {
 
     public static final MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
     // DONE: 1.可以复用client
-    // TODO: 2.尝试使用httpclient或者netty client
     private static OkHttpClient client = new OkHttpClient();
 
+    @Override
     public RpcfxResponse post(RpcfxRequest req, String url) throws IOException {
         String reqJson = encode(req);
         System.out.println("req json: "+reqJson);

@@ -10,4 +10,4 @@ import java.lang.reflect.Method;
 public interface RpcfxHandler {
 
     Object handle(Method method, Object[] params, Class serviceClass, String requestUrl) throws IOException;
-    }
+}

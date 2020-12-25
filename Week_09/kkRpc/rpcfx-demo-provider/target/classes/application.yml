@@ -1,6 +1,12 @@
 server:
-  port: 8080
-  
+#  port: 8080
+
   profiles:
     active: true
+
+spring:
+  main:
+    web-application-type: none
+
+netty_server_port: 8080
 

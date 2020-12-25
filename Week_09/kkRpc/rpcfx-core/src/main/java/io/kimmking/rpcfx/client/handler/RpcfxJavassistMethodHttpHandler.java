@@ -10,12 +10,12 @@ import java.lang.reflect.Method;
  * <p> io.kimmking.rpcfx.client.handler <p>
  */
 @Setter
-public class RpcfxJavassistMethodHandler extends BaseRpcfxHandler implements MethodHandler {
+public class RpcfxJavassistMethodHttpHandler extends BaseRpcfxHttpHandler implements MethodHandler {
 
     private final Class<?> serviceClass;
     private final String url;
 
-    public RpcfxJavassistMethodHandler(Class<?> serviceClass, String url) {
+    public RpcfxJavassistMethodHttpHandler(Class<?> serviceClass, String url) {
         this.serviceClass = serviceClass;
         this.url = url;
     }
